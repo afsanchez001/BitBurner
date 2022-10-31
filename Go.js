@@ -6,6 +6,21 @@ export async function main(ns) {
 
 	while(true) {
 		for (let server of servers) {
+
+			ns.print("Analyzing server, " + server.hostname); // 10-30-2022, NEW for debugging.
+			/*
+			So, the above shows as Undefined in Tail Go.js window.
+			
+			This means that the value of the server is not there. But why?
+			
+			I am going to focus on the function serverList() aka dpList() in the tutorial.
+
+			I did see a comment in the Video comments area by user Kyle Walters that the script
+			is not iterating through the servers properly.
+
+			Related? Not sure.
+			*/
+
 			// Divert all of this server's available threads to the most valuable command. 
 			// To do this we need to know how many threads are available on the server.
 			if(ns.hasRootAccess(server)) {
@@ -16,7 +31,7 @@ export async function main(ns) {
 					if(available_threads >= 1)
 					{
 						ns.print("weakening: " + server);
-						ns.exec("bin.wk.js", server, available_threads, target); // Weaken the target while security > minSecurity.
+						//ns.exec("bin.wk.js", server.hostname, available_threads, target); // Weaken the target while security > minSecurity.
 					}
 				} else if(ns.getServerMoneyAvailable(server) < ns.getServerMaxMoney(server)) {
 					
@@ -24,7 +39,7 @@ export async function main(ns) {
 					if(available_threads >= 1)
 					{
 						ns.print("growing: " + server);
-						ns.exec("bin.gr.js", server, available_threads, target); // Grow the target while money < maxMoney.						
+						//ns.exec("bin.gr.js", server, available_threads, target); // Grow the target while money < maxMoney.						
 					}
 				} else {
 					
@@ -32,7 +47,7 @@ export async function main(ns) {
 					if(available_threads >= 1)
 					{
 						ns.print("hacking: " + server);
-						ns.exec("bin.hk.js", server, available_threads); // Hack the target						
+						//ns.exec("bin.hk.js", server, available_threads); // Hack the target						
 					}					
 				}
 			} else {
@@ -40,21 +55,21 @@ export async function main(ns) {
 					// Open all possible ports on every server; then attempt to nuke.
 					ns.print("Opening all possible ports before nuking. @" + server);
 
-					ns.brutessh(server);
-					ns.ftpcrack(server);
-					ns.relaysmtp(server);
-					ns.httpworm(server);
-					ns.sqlinject(server);
+					//ns.brutessh(server);
+					//ns.ftpcrack(server);
+					//ns.relaysmtp(server);
+					//ns.httpworm(server);
+					//ns.sqlinject(server);
 				}
 				catch {}
 				try { 
-					ns.print("Nuking, " + server);
-					ns.nuke(server);
+					ns.print("Nuking, " + server);					
+					//ns.nuke(server);
 				}
 				catch {}
 			}
 		}	
-		await ns.sleep(10); // to avoid 'not using await' error.
+		await ns.sleep(10000); // 10 seconds, to avoid 'not using await' error.
 	}
 }
 
