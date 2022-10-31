@@ -13,10 +13,3 @@ This code comes from the tutorial by The Black Hat on YouTube @ https://www.yout
 
 • Function TreadCount() converts hostname & scriptRam into a number of threads that represents the server's total capacity.
 
-----------------------------------------------------------------------
-
-OPEN TROUBLESHOOTING QUESTION I HAVE: (10/30/2022)
-
-About ns.exec not working for two of the implementations in Go.js
-
-Please see Open Issues.
