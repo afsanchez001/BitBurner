@@ -20,7 +20,9 @@ Hi Black Hat, I just posted a detailed question about ns.exec not working for tw
 In Go.js there are three uses of ns.exec
 
 ns.exec("bin.wk.js", server, available_threads, target); // Weaken the target while security > minSecurity.
+
 ns.exec("bin.gr.js", server, available_threads, target); // Grow the target while money < maxMoney.	
+
 ns.exec("bin.hk.js", server, available_threads); // Hack the target
 
 weaken and hack both produce this error: 'hostname' should be a string. Is undefined.
