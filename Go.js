@@ -38,19 +38,18 @@ export async function main(ns) {
 			} else {
 				try {
 					// Open all possible ports on every server; then attempt to nuke.
-
 					ns.print("Opening all possible ports before nuking. @" + server);
 
-					// ns.brutessh(server);
-					// ns.ftpcrack(server);
-					// ns.relaysmtp(server);
-					// ns.httpworm(server);
-					// ns.sqlinject(server);
+					ns.brutessh(server);
+					ns.ftpcrack(server);
+					ns.relaysmtp(server);
+					ns.httpworm(server);
+					ns.sqlinject(server);
 				}
 				catch {}
 				try { 
 					ns.print("Nuking, " + server);
-					// ns.nuke(server);
+					ns.nuke(server);
 				}
 				catch {}
 			}
