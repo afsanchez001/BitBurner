@@ -9,6 +9,7 @@ export async function main(ns) {
 		await ns.scp(["bin.wk.js", "bin.gr.js", "bin.hk.js"], server, "home");
 	}
 
+	// This block adapted from u/Naive-Store1451 on Reddit.
 	// ns.print("*************************************************");
 	// ns.print("*");
 	// ns.print("*       Auto-create the Burster programs ");
