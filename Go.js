@@ -1,85 +1,126 @@
 /** @param {NS} ns */
 export async function main(ns) {
-	
+
 	let servers = serverList(ns); // Start here.	
 	let target = "foodnstuff"; // Our target.
 
-	while(true) {
+	// Copy files between servers.
+	for (let server of servers) {
+		await ns.scp(["bin.wk.js", "bin.gr.js", "bin.hk.js"], server, "home");
+	}
+
+	// ns.print("*************************************************");
+	// ns.print("*");
+	// ns.print("*       Auto-create the Burster programs ");
+	// ns.print("*       [BruteSSH, FTPCrack, relaySMTP, HTTPWorm, SQLInject] ");
+	// ns.print("*       if they are unlocked."); // COPY to other servers?
+	// ns.print("*");
+	// ns.print("*************************************************");
+	// let i = 0;
+	// let allBursters = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
+	// while (i < allBursters.length) {
+	// 	let bursterExists = ns.fileExists(allBursters[i]);
+	// 	if (bursterExists) {
+	// 		i = i + 1;
+	// 	} else {
+	// 		ns.createProgram(allBursters[i]);
+	// 		await ns.sleep(60000);
+	// 	}
+	// 	await ns.sleep(1000);
+	// }
+
+	while (true) {
 		for (let server of servers) {
 
-			ns.print("Analyzing server, " + server.hostname); // 10-30-2022, NEW for debugging.
-			/*
-			So, the above shows as Undefined in Tail Go.js window.
-			
-			This means that the value of the server is not there. But why?
-			
-			I am going to focus on the function serverList() aka dpList() in the tutorial.
-
-			I did see a comment in the Video comments area by user Kyle Walters that the script
-			is not iterating through the servers properly.
-
-			Related? Not sure.
-			*/
+			ns.print("*************************************************");
+			ns.print("*");
+			ns.print("*       Starting Hacking Script");
+			ns.print("*");
+			ns.print("*************************************************");
 
 			// Divert all of this server's available threads to the most valuable command. 
 			// To do this we need to know how many threads are available on the server.
-			if(ns.hasRootAccess(server)) {
+			if (ns.hasRootAccess(server) && ns.hasRootAccess(target)) {
 
-				if(ns.getServerSecurityLevel(server) > ns.getServerMinSecurityLevel(server)) { 
-			
-					let available_threads = threadCount(ns, server, 1.75);									
-					if(available_threads >= 1)
-					{
+				if (ns.getServerSecurityLevel(target) > ns.getServerMinSecurityLevel(target)) {
+
+					let available_threads = threadCount(ns, server, 1.75);
+					if (available_threads >= 1) {
 						ns.print("weakening: " + server);
-						//ns.exec("bin.wk.js", server.hostname, available_threads, target); // Weaken the target while security > minSecurity.
+						ns.exec("bin.wk.js", server, available_threads, target); // Weaken the target while security > minSecurity.
 					}
-				} else if(ns.getServerMoneyAvailable(server) < ns.getServerMaxMoney(server)) {
-					
-					let available_threads = threadCount(ns, server, 1.75);							
-					if(available_threads >= 1)
-					{
+				} else if (ns.getServerMoneyAvailable(target) < ns.getServerMaxMoney(target)) {
+
+					let available_threads = threadCount(ns, server, 1.75);
+					if (available_threads >= 1) {
 						ns.print("growing: " + server);
-						//ns.exec("bin.gr.js", server, available_threads, target); // Grow the target while money < maxMoney.						
+						ns.exec("bin.gr.js", server, available_threads, target); // Grow the target while money < maxMoney.						
 					}
 				} else {
-					
+
 					let available_threads = threadCount(ns, server, 1.7, target);
-					if(available_threads >= 1)
-					{
+					if (available_threads >= 1) {
 						ns.print("hacking: " + server);
-						//ns.exec("bin.hk.js", server, available_threads); // Hack the target						
-					}					
+						ns.exec("bin.hk.js", server, available_threads); // Hack the target						
+					}
 				}
 			} else {
 				try {
-					// Open all possible ports on every server; then attempt to nuke.
-					ns.print("Opening all possible ports before nuking. @" + server);
 
-					//ns.brutessh(server);
-					//ns.ftpcrack(server);
-					//ns.relaysmtp(server);
-					//ns.httpworm(server);
-					//ns.sqlinject(server);
+					ns.print("*************************************************");
+					ns.print("*");
+					ns.print("*       Opening all possible ports on all servers ");
+					ns.print("*       (SSH, FTP, SMTP, HTTP, SQL) ");
+					ns.print("*       before using unlocked bursters.");
+					ns.print("*");
+					ns.print("*************************************************");
+
+					if (ns.fileExists("BruteSSH.exe")) {
+						await ns.brutessh(server);
+					} else { ns.print("BruteSSH.exe unavailable for " + server); }
+
+					if (ns.fileExists("FTPCrack.exe")) {
+						await ns.ftpcrack(server);
+					} else { ns.print("FTPCrack.exe unavailable for " + server); }
+
+					if (ns.fileExists("relaySMTP.exe")) {
+						await ns.relaysmtp(server);
+					} else { ns.print("relaySMTP.exe unavailable for " + server); }
+
+					if (ns.fileExists("HTTPWorm.exe")) {
+						await ns.httpworm(server);
+					} else { ns.print("HTTPWorm.exe unavailable for " + server); }
+
+					if (ns.fileExists("SQLInject.exe")) {
+						await ns.sqlinject(server);
+					} else { ns.print("SQLInject.exe unavailable for " + server); }
 				}
-				catch {}
-				try { 
-					ns.print("Nuking, " + server);					
-					//ns.nuke(server);
+				catch {
+					// ...
 				}
-				catch {}
+
+				try {
+					ns.print("*************************************************");
+					ns.print("*       Nuking " + server + " on all open ports.");
+					ns.print("*************************************************");
+					await ns.nuke(server);
+				}
+				catch {
+					// ...
+				}
+
 			}
-		}	
-		await ns.sleep(10000); // 10 seconds, to avoid 'not using await' error.
+			await ns.sleep(10000); // 10 seconds, to avoid 'not using await' error.
+		}
 	}
 }
 
 /* Return an array of servers to hack dynamically */
-function serverList(ns, current="home", set = new Set())
-{	
+function serverList(ns, current = "home", set = new Set()) {
 	let connections = ns.scan(current);
 	let next = connections.filter(c => !set.has(c));
 
-	next.forEach(n => 	{
+	next.forEach(n => {
 		set.add(n);
 		return serverList(ns, n, set);
 	});
@@ -88,8 +129,7 @@ function serverList(ns, current="home", set = new Set())
 }
 
 // Convert hostname & scriptRam into a number of threads that represents the server's total capacity.
-function threadCount(ns, hostname, scriptRam)
-{
+function threadCount(ns, hostname, scriptRam) {
 	let threads = 0;
 	let free_ram = ns.getServerMaxRam(hostname) - ns.getServerUsedRam(hostname);
 
