@@ -4,31 +4,12 @@ export async function main(ns) {
 	let servers = serverList(ns); // Start here.	
 	let target = "foodnstuff"; // Our target.
 
+	//ns.disableLog("ALL");
+
 	// Copy files between servers.
 	for (let server of servers) {
 		await ns.scp(["bin.wk.js", "bin.gr.js", "bin.hk.js"], server, "home");
 	}
-
-	// This block adapted from u/Naive-Store1451 on Reddit.
-	// ns.print("*************************************************");
-	// ns.print("*");
-	// ns.print("*       Auto-create the Burster programs ");
-	// ns.print("*       [BruteSSH, FTPCrack, relaySMTP, HTTPWorm, SQLInject] ");
-	// ns.print("*       if they are unlocked."); // COPY to other servers?
-	// ns.print("*");
-	// ns.print("*************************************************");
-	// let i = 0;
-	// let allBursters = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
-	// while (i < allBursters.length) {
-	// 	let bursterExists = ns.fileExists(allBursters[i]);
-	// 	if (bursterExists) {
-	// 		i = i + 1;
-	// 	} else {
-	// 		ns.createProgram(allBursters[i]);
-	// 		await ns.sleep(60000);
-	// 	}
-	// 	await ns.sleep(1000);
-	// }
 
 	while (true) {
 		for (let server of servers) {
